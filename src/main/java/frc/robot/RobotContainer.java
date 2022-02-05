@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.autonomous.AutoCommand;
+import frc.robot.io.Motors;
 import frc.robot.subsystems.ControlSubsystem;
 
 /**
@@ -18,26 +19,26 @@ import frc.robot.subsystems.ControlSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ControlSubsystem controlSubsystem = new ControlSubsystem();
+  private Motors motors;
+  private ControlSubsystem controlSubsystem;
 
   private final AutoCommand defaultAutoCmd = new AutoCommand();
   //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the button bindings
-    configureButtonBindings();
+    // Initialize subsystems and RobotContainer instance variables
+    motors = new Motors();
+    controlSubsystem = new ControlSubsystem(motors);
+    
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
+   * Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {
-
-  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

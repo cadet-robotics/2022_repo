@@ -1,0 +1,15 @@
+{
+  "controls": {
+    "driver joystick": 0,
+    "dj slider": 3,
+    "dj flywheel": 0,
+    "dj ": ""
+  },
+
+  "motors": {
+    "fl drive": 0,
+    "fr drive": 1,
+    "bl drive": 2,
+    "br drive": 3
+  }
+}

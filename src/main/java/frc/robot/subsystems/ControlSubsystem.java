@@ -19,6 +19,8 @@ public class ControlSubsystem extends SubsystemBase {
 
     private Joystick driverJoystick;
 
+    private JoystickButton testSpinButton;
+
     private AHRS ahrs;
 
     public ControlSubsystem(Motors motors) {
@@ -38,8 +40,11 @@ public class ControlSubsystem extends SubsystemBase {
         // initialize controls and buttons
         driverJoystick = new Joystick(conf.getControls().getInt("driver joystick"));
 
+        testSpinButton = new JoystickButton(driverJoystick, 5);
+
         // JoystickButton example declaration
         JoystickButton jb = new JoystickButton(driverJoystick, 0);
+
     }
 
     @Override
@@ -51,5 +56,7 @@ public class ControlSubsystem extends SubsystemBase {
                 driverJoystick.getTwist() * Constants.DRIVE_MODIFIER,
                 ahrs.getAngle()
         );
+
+        motors.getDrive()[1].set(testSpinButton.get() ? 100 : 0);
     }
 }

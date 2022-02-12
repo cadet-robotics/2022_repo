@@ -2,8 +2,9 @@
   "controls": {
     "driver joystick": 0,
     "dj slider": 3,
-    "dj flywheel": 0,
-    "dj ": ""
+
+    "dj intake manual": 1,
+    "dj override": 2
   },
 
   "motors": {

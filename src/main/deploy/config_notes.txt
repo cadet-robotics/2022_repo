@@ -1,0 +1,16 @@
+Controls:
+    driver joystick
+        ID of the controller that the Driver Joystick is attached to
+    dj slider
+        ID of the slider axis on the controller
+    dj intake manual
+        ID of the trigger, activating the front ball intake
+    dj override
+        General override key, going to be used to override automatic functions and commands, and to
+        override checks and sensor data.
+
+Motors:
+    fl drive
+    fr drive
+    bl drive
+    br drive

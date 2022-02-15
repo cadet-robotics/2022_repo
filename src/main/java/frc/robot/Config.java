@@ -27,10 +27,12 @@ public class Config {
     public static Config getInstance() { return instance; }
 
     private JSONObject controls,
-                       motors;
+                       motors,
+                       pneumatics;
 
     public JSONObject getControls() { return controls; }
     public JSONObject getMotors() { return motors; }
+    public JSONObject getPneumatics() { return pneumatics; }
 
     /**
      * Constructs configuration object from config file name
@@ -47,6 +49,7 @@ public class Config {
 
                 controls = json.getJSONObject("controls");
                 motors = json.getJSONObject("motors");
+                pneumatics = json.getJSONObject("pneumatics");
 
                 return;
             }

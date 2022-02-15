@@ -2,8 +2,7 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -20,6 +19,8 @@ public class ControlSubsystem extends SubsystemBase {
     private Joystick driverJoystick;
 
     private JoystickButton testSpinButton;
+
+    private DoubleSolenoid airBoy; // this name was the doing of AJ Williams
 
     private AHRS ahrs;
 
@@ -42,6 +43,12 @@ public class ControlSubsystem extends SubsystemBase {
 
         testSpinButton = new JoystickButton(driverJoystick, 5);
 
+        airBoy = new DoubleSolenoid(
+                PneumaticsModuleType.REVPH,
+                conf.getPneumatics().getInt("airboy port 0"),
+                conf.getPneumatics().getInt("airboy port 1")
+        );
+
         // JoystickButton example declaration
         JoystickButton jb = new JoystickButton(driverJoystick, 0);
 
@@ -49,14 +56,32 @@ public class ControlSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // TODO: fix cartesian drive so that yspeed xspeed zrotation is all correct coefficients and placements
-        drive.driveCartesian(
-                driverJoystick.getX() * Constants.DRIVE_MODIFIER,
-                driverJoystick.getY() * Constants.DRIVE_MODIFIER,
-                driverJoystick.getTwist() * Constants.DRIVE_MODIFIER,
-                ahrs.getAngle()
-        );
+        drivePeriodic();
 
-        motors.getDrive()[1].set(testSpinButton.get() ? 100 : 0);
+        airBoy.set(testSpinButton.get() ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+
+        //motors.getDrive()[1].set(testSpinButton.get() ? 100 : 0);
+    }
+
+    void drivePeriodic() {
+        double x = -driverJoystick.getX(),
+               y = driverJoystick.getY(),
+               z = driverJoystick.getZ();
+
+        if (Math.abs(x) < Constants.JOYSTICK_THRESHOLD)
+            x = 0;
+        if (Math.abs(y) < Constants.JOYSTICK_THRESHOLD)
+            y = 0;
+        if (Math.abs(z) < Constants.JOYSTICK_THRESHOLD)
+            z = 0;
+
+        x *= Constants.DRIVE_MODIFIER;
+        y *= Constants.DRIVE_MODIFIER;
+        z *= Constants.DRIVE_MODIFIER;
+
+        // TODO: fix cartesian drive so that yspeed xspeed zrotation is all correct coefficients and placements
+        // NOTE: Field oriented drive is enabled by 4th param
+        drive.driveCartesian(x, y, z, ahrs.getAngle());
     }
 }
+

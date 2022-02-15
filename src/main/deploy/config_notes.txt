@@ -14,3 +14,9 @@ Motors:
     fr drive
     bl drive
     br drive
+
+Pneumatics:
+    airboy port 0
+        Forward channel for airboy :)
+    airboy port 1
+        Reverse channel for airboy :)

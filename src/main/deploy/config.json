@@ -12,5 +12,11 @@
     "fr drive": 1,
     "bl drive": 2,
     "br drive": 3
+  },
+
+  "pneumatics": {
+    "pneumatic hub can": 21,
+    "airboy port 0": 0,
+    "airboy port 1": 1
   }
 }

@@ -3,8 +3,8 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2022.3.1"
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
@@ -19,8 +19,6 @@ deploy {
             // want to store a team number in this file.
             team = project.frc.getTeamNumber()
             debug = project.frc.getDebugOrDefault(false)
-
-            checkImage = false
 
             artifacts {
                 // First part is artifact name, 2nd is artifact type

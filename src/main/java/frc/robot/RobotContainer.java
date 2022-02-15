@@ -30,7 +30,6 @@ public class RobotContainer {
     // Initialize subsystems and RobotContainer instance variables
     motors = new Motors();
     controlSubsystem = new ControlSubsystem(motors);
-    
   }
 
   /**

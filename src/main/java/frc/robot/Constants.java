@@ -15,5 +15,6 @@ package frc.robot;
 public final class Constants {
     public static final String CONFIG_FILE = "config.json";
 
-    public static final double DRIVE_MODIFIER = 0.8;
+    public static final double DRIVE_MODIFIER = 0.75;
+    public static final double JOYSTICK_THRESHOLD = 0.1;
 }

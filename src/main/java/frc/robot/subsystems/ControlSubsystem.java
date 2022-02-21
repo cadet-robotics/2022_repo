@@ -18,7 +18,9 @@ public class ControlSubsystem extends SubsystemBase {
 
     private Joystick driverJoystick;
 
-    private JoystickButton testSpinButton;
+    private JoystickButton magStop,     // only one ball in mag at a time
+                           ballLift,    // lifts ball to shooter
+                           shooterLift; // lifts shooter to angle
 
     private DoubleSolenoid airBoy; // this name was the doing of AJ Williams
 
@@ -38,33 +40,33 @@ public class ControlSubsystem extends SubsystemBase {
 
         ahrs = new AHRS(SPI.Port.kMXP);
 
-        // initialize controls and buttons
+        // initialize controls
         driverJoystick = new Joystick(conf.getControls().getInt("driver joystick"));
 
-        testSpinButton = new JoystickButton(driverJoystick, 5);
+        magStop = new JoystickButton(driverJoystick, 5);
+
 
         airBoy = new DoubleSolenoid(
                 PneumaticsModuleType.REVPH,
                 conf.getPneumatics().getInt("airboy port 0"),
                 conf.getPneumatics().getInt("airboy port 1")
         );
-
-        // JoystickButton example declaration
-        JoystickButton jb = new JoystickButton(driverJoystick, 0);
-
     }
 
     @Override
     public void periodic() {
         drivePeriodic();
 
-        airBoy.set(testSpinButton.get() ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+        airBoy.set(magStop.get() ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
 
         //motors.getDrive()[1].set(testSpinButton.get() ? 100 : 0);
     }
 
+    /**
+     * Handles driving from joystick input
+     */
     void drivePeriodic() {
-        double x = -driverJoystick.getX(),
+        double x = driverJoystick.getX(),
                y = driverJoystick.getY(),
                z = driverJoystick.getZ();
 
@@ -80,8 +82,8 @@ public class ControlSubsystem extends SubsystemBase {
         z *= Constants.DRIVE_MODIFIER;
 
         // TODO: fix cartesian drive so that yspeed xspeed zrotation is all correct coefficients and placements
-        // NOTE: Field oriented drive is enabled by 4th param
-        drive.driveCartesian(x, y, z, ahrs.getAngle());
+        // NOTE: Field oriented drive is implemented by ahrs
+        drive.driveCartesian(y, x, z, ahrs.getAngle());
     }
 }
 

@@ -7,15 +7,23 @@
     "dj override": 2
   },
 
-  "motors": {
+  "can": {
     "fl drive": 0,
     "fr drive": 1,
     "bl drive": 2,
-    "br drive": 3
+    "br drive": 3,
+    "pneumatic hub": 21
+  },
+
+  "pwm": {
+    "intake": 0
+  },
+
+  "analog in": {
+    "pneumatic gauge": 0
   },
 
   "pneumatics": {
-    "pneumatic hub can": 21,
     "airboy port 0": 0,
     "airboy port 1": 1
   }

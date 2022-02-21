@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Filesystem;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -15,7 +14,7 @@ import java.io.FileReader;
  * @author Matt Robinson
  */
 public class Config {
-    static Config instance;
+    private static Config instance;
     static {
         try {
             instance = new Config(Constants.CONFIG_FILE);
@@ -27,11 +26,13 @@ public class Config {
     public static Config getInstance() { return instance; }
 
     private JSONObject controls,
-                       motors,
+                       can,
+                       pwm,
                        pneumatics;
 
     public JSONObject getControls() { return controls; }
-    public JSONObject getMotors() { return motors; }
+    public JSONObject getCan() { return can; }
+    public JSONObject getPWM() { return pwm; }
     public JSONObject getPneumatics() { return pneumatics; }
 
     /**
@@ -48,7 +49,8 @@ public class Config {
                 JSONObject json = new JSONObject(new JSONTokener(new FileReader(f)));
 
                 controls = json.getJSONObject("controls");
-                motors = json.getJSONObject("motors");
+                can = json.getJSONObject("can");
+                pwm = json.getJSONObject("pwm");
                 pneumatics = json.getJSONObject("pneumatics");
 
                 return;

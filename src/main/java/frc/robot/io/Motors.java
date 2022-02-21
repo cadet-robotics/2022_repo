@@ -2,21 +2,25 @@ package frc.robot.io;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import frc.robot.Config;
-import org.json.JSONObject;
 
 public class Motors {
-    CANSparkMax frontLeft, frontRight, backLeft, backRight; // drive motors
+    private CANSparkMax frontLeft, frontRight, backLeft, backRight; // drive motors
+    private PWMVictorSPX intake;
+    
 
-    Config conf = Config.getInstance();
+    private Config conf = Config.getInstance();
 
     public Motors() {
         // initialize drive motors
-        frontLeft = new CANSparkMax(conf.getMotors().getInt("fl drive"), CANSparkMaxLowLevel.MotorType.kBrushless);
-        frontRight = new CANSparkMax(conf.getMotors().getInt("fr drive"), CANSparkMaxLowLevel.MotorType.kBrushless);
-        backLeft = new CANSparkMax(conf.getMotors().getInt("bl drive"), CANSparkMaxLowLevel.MotorType.kBrushless);
-        backRight = new CANSparkMax(conf.getMotors().getInt("br drive"), CANSparkMaxLowLevel.MotorType.kBrushless);
+        frontLeft = new CANSparkMax(conf.getCan().getInt("fl drive"), CANSparkMaxLowLevel.MotorType.kBrushless);
+        frontRight = new CANSparkMax(conf.getCan().getInt("fr drive"), CANSparkMaxLowLevel.MotorType.kBrushless);
+        backLeft = new CANSparkMax(conf.getCan().getInt("bl drive"), CANSparkMaxLowLevel.MotorType.kBrushless);
+        backRight = new CANSparkMax(conf.getCan().getInt("br drive"), CANSparkMaxLowLevel.MotorType.kBrushless);
+
+        intake = new PWMVictorSPX(conf.getPWM().getInt("intake"));
     }
 
     /**
@@ -25,4 +29,5 @@ public class Motors {
     public CANSparkMax[] getDrive() {
         return new CANSparkMax[] { frontLeft, frontRight, backLeft, backRight };
     }
+    public PWMVictorSPX getIntake() { return intake; }
 }

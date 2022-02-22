@@ -15,6 +15,6 @@ package frc.robot;
 public final class Constants {
     public static final String CONFIG_FILE = "config.json";
 
-    public static final double DRIVE_MODIFIER = 0.75; // 75% max throttle
+    public static final double DRIVE_MODIFIER = 0.9; // 75% max throttle
     public static final double JOYSTICK_THRESHOLD = 0.1;
 }

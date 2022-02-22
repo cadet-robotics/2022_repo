@@ -8,15 +8,18 @@
   },
 
   "can": {
-    "fl drive": 0,
-    "fr drive": 1,
-    "bl drive": 2,
-    "br drive": 3,
+    "fl drive": 7,
+    "fr drive": 2,
+    "bl drive": 5,
+    "br drive": 1,
+
+    "intake": 4,
+
     "pneumatic hub": 21
   },
 
   "pwm": {
-    "intake": 0
+
   },
 
   "analog in": {

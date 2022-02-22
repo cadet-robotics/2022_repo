@@ -3,13 +3,11 @@ package frc.robot.io;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
-import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import frc.robot.Config;
 
 public class Motors {
     private CANSparkMax frontLeft, frontRight, backLeft, backRight; // drive motors
-    private PWMVictorSPX intake;
-    
+    private CANSparkMax intake;
 
     private Config conf = Config.getInstance();
 
@@ -20,7 +18,10 @@ public class Motors {
         backLeft = new CANSparkMax(conf.getCan().getInt("bl drive"), CANSparkMaxLowLevel.MotorType.kBrushless);
         backRight = new CANSparkMax(conf.getCan().getInt("br drive"), CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        intake = new PWMVictorSPX(conf.getPWM().getInt("intake"));
+        intake = new CANSparkMax(conf.getCan().getInt("intake"), CANSparkMaxLowLevel.MotorType.kBrushless);
+
+        // can motor setup stuff :)
+        frontLeft.setInverted(true);
     }
 
     /**
@@ -29,5 +30,5 @@ public class Motors {
     public CANSparkMax[] getDrive() {
         return new CANSparkMax[] { frontLeft, frontRight, backLeft, backRight };
     }
-    public PWMVictorSPX getIntake() { return intake; }
+    public CANSparkMax getIntake() { return intake; }
 }

@@ -68,7 +68,7 @@ public class ControlSubsystem extends SubsystemBase {
     void drivePeriodic() {
         double x = driverJoystick.getX(),
                y = driverJoystick.getY(),
-               z = driverJoystick.getZ();
+               z = -driverJoystick.getZ();
 
         if (Math.abs(x) < Constants.JOYSTICK_THRESHOLD)
             x = 0;
@@ -82,8 +82,8 @@ public class ControlSubsystem extends SubsystemBase {
         z *= Constants.DRIVE_MODIFIER;
 
         // TODO: fix cartesian drive so that yspeed xspeed zrotation is all correct coefficients and placements
-        // NOTE: Field oriented drive is implemented by ahrs
-        drive.driveCartesian(y, x, z, ahrs.getAngle());
+        // NOTE: Field oriented drive is implemented by ahrs ", ahrs.getAngle()"
+        drive.driveCartesian(x, y, z);
     }
 }
 

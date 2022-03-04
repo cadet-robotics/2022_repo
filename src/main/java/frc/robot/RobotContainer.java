@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.autonomous.AutoCommand;
 import frc.robot.io.Motors;
+import frc.robot.io.Sensors;
 import frc.robot.subsystems.ControlSubsystem;
 
 /**
@@ -20,16 +21,20 @@ import frc.robot.subsystems.ControlSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private Motors motors;
+  private Sensors sensors;
   private ControlSubsystem controlSubsystem;
 
-  private final AutoCommand defaultAutoCmd = new AutoCommand();
+  private final AutoCommand defaultAutoCmd;
   //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Initialize subsystems and RobotContainer instance variables
     motors = new Motors();
-    controlSubsystem = new ControlSubsystem(motors);
+    sensors = new Sensors();
+    controlSubsystem = new ControlSubsystem(motors, sensors);
+
+    defaultAutoCmd = new AutoCommand(controlSubsystem);
   }
 
   /**

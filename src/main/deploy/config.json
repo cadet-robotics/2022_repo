@@ -1,10 +1,25 @@
 {
-  "controls": {
+  "driver controls": {
     "driver joystick": 0,
     "dj slider": 3,
 
     "dj intake manual": 1,
-    "dj override": 2
+    "dj override": 2,
+
+    "mag lock": 3,
+    "ball lift": 6,
+
+    "run shooter": 4,
+
+    "team ball color": 8,
+
+    "shooter limit set": 11,
+    "drive limit set": 10,
+    "intake limit set": 12
+  },
+
+  "codriver controls" : {
+    "auto shoot": 1
   },
 
   "can": {
@@ -15,6 +30,9 @@
 
     "intake": 4,
 
+    "flywheel 0": 6,
+    "flywheel 1": 3,
+
     "pneumatic hub": 21
   },
 
@@ -22,12 +40,15 @@
 
   },
 
-  "analog in": {
-    "pneumatic gauge": 0
+  "digital in": {
+    "lift sensor": 0
   },
 
   "pneumatics": {
-    "airboy port 0": 0,
-    "airboy port 1": 1
+    "maglock 0": 9,
+    "maglock 1": 6,
+
+    "lift down": 8,
+    "lift up": 7
   }
 }

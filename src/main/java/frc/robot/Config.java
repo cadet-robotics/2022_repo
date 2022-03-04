@@ -25,14 +25,18 @@ public class Config {
 
     public static Config getInstance() { return instance; }
 
-    private JSONObject controls,
+    private JSONObject driverControls,
+                       codriverControls,
                        can,
                        pwm,
-                       pneumatics;
+                       pneumatics,
+                       digIn;
 
-    public JSONObject getControls() { return controls; }
+    public JSONObject getDriverControls() { return driverControls; }
+    public JSONObject getCoDriverControls() { return codriverControls; }
     public JSONObject getCan() { return can; }
     public JSONObject getPWM() { return pwm; }
+    public JSONObject getDigitalIn() { return digIn; };
     public JSONObject getPneumatics() { return pneumatics; }
 
     /**
@@ -48,10 +52,13 @@ public class Config {
             if (f.getName().equals(fileName)) {
                 JSONObject json = new JSONObject(new JSONTokener(new FileReader(f)));
 
-                controls = json.getJSONObject("controls");
+                driverControls = json.getJSONObject("driver controls");
+                codriverControls = json.getJSONObject("codriver controls");
+
                 can = json.getJSONObject("can");
                 pwm = json.getJSONObject("pwm");
                 pneumatics = json.getJSONObject("pneumatics");
+                digIn = json.getJSONObject("digital in");
 
                 return;
             }

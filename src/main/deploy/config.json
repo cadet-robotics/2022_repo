@@ -7,11 +7,9 @@
     "dj override": 2,
 
     "mag lock": 3,
+    "run shooter": 4,
     "ball lift": 6,
 
-    "run shooter": 4,
-
-    "team ball color": 8,
 
     "shooter limit set": 11,
     "drive limit set": 10,
@@ -19,7 +17,12 @@
   },
 
   "codriver controls" : {
-    "auto shoot": 1
+    "auto shoot": 2,
+    "reverse intake": 3,
+    "single shoot": 1,
+    "override": 6,
+    "limit reset": 7,
+    "intake": 8
   },
 
   "can": {
@@ -29,6 +32,7 @@
     "br drive": 1,
 
     "intake": 4,
+    "intake top": 8,
 
     "flywheel 0": 6,
     "flywheel 1": 3,
@@ -42,6 +46,10 @@
 
   "digital in": {
     "lift sensor": 0
+  },
+
+  "analog in": {
+    "lift distance": 0
   },
 
   "pneumatics": {

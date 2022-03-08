@@ -30,6 +30,7 @@ public class Config {
                        can,
                        pwm,
                        pneumatics,
+                       analogIn,
                        digIn;
 
     public JSONObject getDriverControls() { return driverControls; }
@@ -38,6 +39,7 @@ public class Config {
     public JSONObject getPWM() { return pwm; }
     public JSONObject getDigitalIn() { return digIn; };
     public JSONObject getPneumatics() { return pneumatics; }
+    public JSONObject getAnalogIn() { return analogIn; }
 
     /**
      * Constructs configuration object from config file name
@@ -59,6 +61,7 @@ public class Config {
                 pwm = json.getJSONObject("pwm");
                 pneumatics = json.getJSONObject("pneumatics");
                 digIn = json.getJSONObject("digital in");
+                analogIn = json.getJSONObject("analog in");
 
                 return;
             }

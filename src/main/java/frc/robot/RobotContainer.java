@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.autonomous.AutoCommand;
+import frc.robot.commands.autonomous.BasicAutoPath;
 import frc.robot.io.Motors;
 import frc.robot.io.Sensors;
 import frc.robot.subsystems.ControlSubsystem;
@@ -24,7 +25,7 @@ public class RobotContainer {
   private Sensors sensors;
   private ControlSubsystem controlSubsystem;
 
-  private final AutoCommand defaultAutoCmd;
+  private final BasicAutoPath defaultAutoCmd;
   //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -34,7 +35,7 @@ public class RobotContainer {
     sensors = new Sensors();
     controlSubsystem = new ControlSubsystem(motors, sensors);
 
-    defaultAutoCmd = new AutoCommand(controlSubsystem);
+    defaultAutoCmd = new BasicAutoPath(controlSubsystem);
   }
 
   /**

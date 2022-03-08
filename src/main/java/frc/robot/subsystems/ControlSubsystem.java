@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Config;
 import frc.robot.Constants;
 import frc.robot.commands.DumpToShooterCommand;
+import frc.robot.commands.SingleShootCommand;
 import frc.robot.commands.ZStepCommand;
 import frc.robot.io.MotorPair;
 import frc.robot.io.Motors;
@@ -42,22 +43,28 @@ public class ControlSubsystem extends SubsystemBase {
                            shooterLimitButton, // sets shooter limit
                            intakeLimitButton, // sets max intake speed
                            throttleLimitButton, // sets max drive speed
-                           teamBallButton,
                            overrideButton,
                            autoShootButton,
+                           reverseIntakeButton,
+                           singleShootButton,
+                           coDriverIntake,
+                           coDriverOverride,
+                           limitReset,
                            zStepToZeroButton; // runs zStepper cmd to bring heading to 0
 
     // this used to be airBoy, named by AJ Williams. Rip airBoy.
     public PermissiveHolder<DoubleSolenoid> liftSolenoid; // 1-manual, 2-shoot cmd
     public PermissiveHolder<DoubleSolenoid> magLock; // 1-manual, 2-shoot cmd
 
-    private AHRS ahrs;
+    public AHRS ahrs;
 
     private PixyHandler pixy;
-    private int ballSignature = 1; // 1 = red, 2 = blue
+    private int ballSignature = // 1 = red, 2 = blue
+            DriverStation.getAlliance() == DriverStation.Alliance.Red ? 1 : 2;
 
     private ZStepCommand zStepper;
     public DumpToShooterCommand autoShootCmd;
+    public SingleShootCommand singleShootCommand;
 
     private static double sliderToPercent(double sliderVal) {
         return 1 - ((sliderVal + 1) / 2);
@@ -123,24 +130,13 @@ public class ControlSubsystem extends SubsystemBase {
             Constants.DRIVE_MODIFIER = sliderToPercent();
         });
 
-        // Sets the color of our alliance's ball
-        teamBallButton = new JoystickButton(driverJoystick, conf.getDriverControls().getInt("team ball color"));
-        teamBallButton.whenPressed(() -> {
-            if (ballSignature == 1) {
-                ballSignature = 2;
-            } else {
-                ballSignature = 1;
-            }
-        });
-
         // Sets intake speed limit
         intakeLimitButton = new JoystickButton(driverJoystick, conf.getDriverControls().getInt("intake limit set"));
         intakeLimitButton.whenPressed(() -> {
             Constants.INTAKE_MODIFIER = sliderToPercent();
         });
 
-        overrideButton = new JoystickButton(driverJoystick, conf.getDriverControls().getInt("dj override"));
-        overrideButton.whenPressed(() -> {
+        Runnable override = () -> {
             if (zStepper != null) {
                 zStepper.cancel();
                 zStepper = null;
@@ -149,15 +145,43 @@ public class ControlSubsystem extends SubsystemBase {
                 autoShootCmd.cancel();
                 autoShootCmd = null;
             }
+            if (singleShootCommand != null) {
+                singleShootCommand.cancel();
+                singleShootCommand = null;
+            }
+        };
+
+        overrideButton = new JoystickButton(driverJoystick, conf.getDriverControls().getInt("dj override"));
+        overrideButton.whenPressed(override);
+        coDriverOverride = new JoystickButton(codriverJoystick, conf.getCoDriverControls().getInt("override"));
+        coDriverOverride.whenPressed(override);
+
+        limitReset = new JoystickButton(driverJoystick, conf.getDriverControls().getInt("limit reset"));
+        limitReset.whenPressed(() -> {
+            Constants.SHOOTER_MODIFIER = Constants.SHOOTER_DEFAULT;
+            Constants.INTAKE_MODIFIER = Constants.INTAKE_DEFAULT;
+            Constants.DRIVE_MODIFIER = Constants.DRIVE_DEFAULT;
         });
 
         autoShootButton = new JoystickButton(codriverJoystick, conf.getCoDriverControls().getInt("auto shoot"));
         autoShootButton.whenPressed(() -> {
-            if (!sensors.ballOnLift.get()) {
+            if (!sensors.ballOnLift.get() || overrideButton.get()) {
                 autoShootCmd = new DumpToShooterCommand(this, sensors);
                 autoShootCmd.schedule();
             }
         });
+
+        singleShootButton = new JoystickButton(codriverJoystick, conf.getCoDriverControls().getInt("single shoot"));
+        singleShootButton.whenPressed(() -> {
+            if (!sensors.ballOnLift.get() || overrideButton.get()) {
+                autoShootCmd = new DumpToShooterCommand(this, sensors);
+                autoShootCmd.schedule();
+            }
+        });
+
+        coDriverIntake = new JoystickButton(codriverJoystick, conf.getCoDriverControls().getInt("intake"));
+
+        reverseIntakeButton = new JoystickButton(codriverJoystick, conf.getCoDriverControls().getInt("reverse intake"));
 
         // steps the bot to z rotation = 0 degrees
         //zStepToZeroButton = new JoystickButton(driverJoystick, 6);
@@ -190,16 +214,13 @@ public class ControlSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Drive Modifier", Constants.DRIVE_MODIFIER);
 
             SmartDashboard.putNumber("Compressor Pressure", airCompressor.getPressure());
-            SmartDashboard.putNumber("Intake RPM", motors.getIntake().get());
-            SmartDashboard.putNumberArray("Shooter RPM", new double[] {
-                    motors.getShooter()[0].get(),
-                    motors.getShooter()[1].get()
-            });
+            SmartDashboard.putNumber("Intake RPM", motors.getIntake().getMotor1().get());
+            SmartDashboard.putNumber("Shooter RPM", motors.getShooter()[0].get());
 
             SmartDashboard.putBoolean("Pixy Triggered", pixy.getBallAvailable(ballSignature));
-            SmartDashboard.putNumber("Pixy FPS", pixy.getPixy().getFPS());
 
             SmartDashboard.putBoolean("Lift Loaded", !sensors.ballOnLift.get());
+            SmartDashboard.putNumber("Lift Distance", 27 / sensors.liftHeight.getAverageVoltage());
 
             // Turns off annoying limelight green light, disables built-in limelight vision code
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
@@ -220,11 +241,13 @@ public class ControlSubsystem extends SubsystemBase {
             );
 
         // intake
-        if (driverJoystick.getRawButton(conf.getDriverControls().getInt("dj intake manual")) &&
-                (overrideButton.get() || pixy.getBallAvailable(ballSignature))) {
-            motors.getIntake().set(Constants.INTAKE_MODIFIER);
+        if ((driverJoystick.getRawButton(conf.getDriverControls().getInt("dj intake manual")) || coDriverIntake.get())
+                && (overrideButton.get() || coDriverOverride.get() || pixy.getBallAvailable(ballSignature))) {
+            motors.getIntake().setValue(
+                    (reverseIntakeButton.get() ? -1 : 1) * Constants.INTAKE_MODIFIER
+            );
         } else {
-            motors.getIntake().set(0);
+            motors.getIntake().setValue(0);
         }
 
         // shooter
@@ -263,7 +286,7 @@ public class ControlSubsystem extends SubsystemBase {
 
         // TODO: fix cartesian drive so that yspeed xspeed zrotation is all correct coefficients and placements
         // NOTE: Field oriented drive is implemented by ahrs ", ahrs.getAngle()"
-        drive.getVal(1).driveCartesian(x, y, z);
+        drive.getVal(1).driveCartesian(x, y, z, ahrs.getAngle());
     }
 }
 

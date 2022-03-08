@@ -14,4 +14,7 @@ public class MotorPair {
         m1.set(val);
         m2.set(val);
     }
+
+    public CANSparkMax getMotor1() { return m1; }
+    public CANSparkMax getMotor2() { return m2; }
 }

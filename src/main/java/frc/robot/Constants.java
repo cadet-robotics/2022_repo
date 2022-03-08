@@ -19,11 +19,15 @@ public final class Constants {
 
     public static final double DRIVE_X_MODIFIER = 1,
                                DRIVE_Y_MODIFIER = 1,
-                               DRIVE_Z_MODIFIER = 0.5;
+                               DRIVE_Z_MODIFIER = 0.6;
+
+    public static final double DRIVE_DEFAULT = 1,
+                               INTAKE_DEFAULT = 0.35,
+                               SHOOTER_DEFAULT = 0.75;
 
     public static double DRIVE_MODIFIER = 1;
-    public static double INTAKE_MODIFIER = 0.58;
-    public static double SHOOTER_MODIFIER = 0.9;
+    public static double INTAKE_MODIFIER = 0.35;
+    public static double SHOOTER_MODIFIER = 0.75;
 
     public static final double Z_STEPPER_SPEED = 0.1,
                                Z_STEPPER_TOLERANCE = 2;

@@ -9,6 +9,7 @@
     "mag lock": 3,
     "run shooter": 4,
     "ball lift": 6,
+    "limit reset": 7,
 
 
     "shooter limit set": 11,
@@ -21,7 +22,6 @@
     "reverse intake": 3,
     "single shoot": 1,
     "override": 6,
-    "limit reset": 7,
     "intake": 8
   },
 

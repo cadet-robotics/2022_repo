@@ -24,7 +24,7 @@ import io.github.pseudoresonance.pixy2api.Pixy2;
 public class ControlSubsystem extends SubsystemBase {
     private Config conf = Config.getInstance();
 
-    private int periodicCounter = 0;
+    public int periodicCounter = 0;
 
     private Motors motors;
     public Sensors sensors;
@@ -174,8 +174,8 @@ public class ControlSubsystem extends SubsystemBase {
         singleShootButton = new JoystickButton(codriverJoystick, conf.getCoDriverControls().getInt("single shoot"));
         singleShootButton.whenPressed(() -> {
             if (!sensors.ballOnLift.get() || overrideButton.get()) {
-                autoShootCmd = new DumpToShooterCommand(this, sensors);
-                autoShootCmd.schedule();
+                singleShootCommand = new SingleShootCommand(this);
+                singleShootCommand.schedule();
             }
         });
 
@@ -221,6 +221,9 @@ public class ControlSubsystem extends SubsystemBase {
 
             SmartDashboard.putBoolean("Lift Loaded", !sensors.ballOnLift.get());
             SmartDashboard.putNumber("Lift Distance", 27 / sensors.liftHeight.getAverageVoltage());
+
+            SmartDashboard.putBoolean("Auto Shoot 1", autoShootCmd != null);
+            SmartDashboard.putBoolean("Auto Shoot 2", singleShootCommand != null);
 
             // Turns off annoying limelight green light, disables built-in limelight vision code
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
@@ -286,7 +289,7 @@ public class ControlSubsystem extends SubsystemBase {
 
         // TODO: fix cartesian drive so that yspeed xspeed zrotation is all correct coefficients and placements
         // NOTE: Field oriented drive is implemented by ahrs ", ahrs.getAngle()"
-        drive.getVal(1).driveCartesian(x, y, z, ahrs.getAngle());
+        drive.getVal(1).driveCartesian(x, y, z);
     }
 }
 

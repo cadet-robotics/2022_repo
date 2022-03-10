@@ -9,10 +9,12 @@ import frc.robot.subsystems.ControlSubsystem;
 public class SingleShootCommand extends CommandBase {
     private ControlSubsystem cs;
     private Timer t;
+    private int pet; // periodic execute time
 
     public SingleShootCommand(ControlSubsystem cs) {
         this.cs = cs;
         t = new Timer();
+        pet = cs.periodicCounter;
     }
 
     @Override
@@ -31,14 +33,17 @@ public class SingleShootCommand extends CommandBase {
 
         if (t.get() > 1 && t.get() < 3.5) {
             cs.liftSolenoid.getVal(2).set(DoubleSolenoid.Value.kReverse);
-        } else if (t.get() > 3.5) {
+        } else if (t.get() > 3.5 && t.get() < 4.5) {
             cs.liftSolenoid.getVal(2).set(DoubleSolenoid.Value.kForward);
         }
+        //else if (t.get() > 4.5) {
+        //    cs.magLock.getVal(2).set();
+        //}
     }
 
     @Override
     public boolean isFinished() {
-        if (t.get() > 3.6)
+        if (t.get() > 4.6)
             return true;
 
         return false;
@@ -52,5 +57,9 @@ public class SingleShootCommand extends CommandBase {
         cs.magLock.setDefaultPermission();
         cs.shooter.setDefaultPermission();
         cs.liftSolenoid.setDefaultPermission();
+    }
+
+    public int getPet() {
+        return pet;
     }
 }

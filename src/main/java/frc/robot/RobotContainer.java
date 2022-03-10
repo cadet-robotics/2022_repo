@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.autonomous.AutoCommand;
 import frc.robot.commands.autonomous.BasicAutoPath;
@@ -25,7 +26,7 @@ public class RobotContainer {
   private Sensors sensors;
   private ControlSubsystem controlSubsystem;
 
-  private final BasicAutoPath defaultAutoCmd;
+  private SendableChooser<Command> auto_chooser;
   //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -35,7 +36,9 @@ public class RobotContainer {
     sensors = new Sensors();
     controlSubsystem = new ControlSubsystem(motors, sensors);
 
-    defaultAutoCmd = new BasicAutoPath(controlSubsystem);
+    auto_chooser = new SendableChooser<>();
+    auto_chooser.setDefaultOption("Default Auto", new BasicAutoPath(controlSubsystem));
+    auto_chooser.addOption("None", null);
   }
 
   /**
@@ -52,6 +55,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return defaultAutoCmd;
+    return auto_chooser.getSelected();
   }
 }

@@ -13,11 +13,13 @@ public class DumpToShooterCommand extends CommandBase {
     private ControlSubsystem controlSubsystem;
     private Sensors sensors;
     private Timer timer;
+    private int pet; // Periodic execute time
 
     public DumpToShooterCommand(ControlSubsystem cs, Sensors s) {
         timer = new Timer();
         controlSubsystem = cs;
         sensors = s;
+        pet = cs.periodicCounter;
     }
 
     @Override
@@ -70,5 +72,9 @@ public class DumpToShooterCommand extends CommandBase {
             return true;
 
         return false;
+    }
+
+    public int getPet() {
+        return pet;
     }
 }

@@ -77,6 +77,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    // resets limits
+    Constants.DRIVE_MODIFIER = Constants.DRIVE_DEFAULT;
+    Constants.SHOOTER_MODIFIER = Constants.SHOOTER_DEFAULT;
+    Constants.INTAKE_MODIFIER = Constants.INTAKE_DEFAULT;
   }
 
   /** This function is called periodically during operator control. */

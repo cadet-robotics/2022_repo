@@ -21,6 +21,7 @@
     "auto shoot": 2,
     "reverse intake": 3,
     "single shoot": 1,
+    "shooter": 5,
     "override": 6,
     "intake": 8
   },
@@ -36,6 +37,8 @@
 
     "flywheel 0": 6,
     "flywheel 1": 3,
+
+    "climb": 9,
 
     "pneumatic hub": 21
   },

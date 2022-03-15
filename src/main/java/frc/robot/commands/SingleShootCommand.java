@@ -19,7 +19,7 @@ public class SingleShootCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        cs.magLock.setPermission(2);
+        //cs.magLock.setPermission(2);
         cs.shooter.setPermission(2);
         cs.liftSolenoid.setPermission(2);
 
@@ -28,7 +28,7 @@ public class SingleShootCommand extends CommandBase {
 
     @Override
     public void execute() {
-        cs.magLock.getVal(2).set(DoubleSolenoid.Value.kReverse);
+        //cs.magLock.getVal(2).set(DoubleSolenoid.Value.kReverse);
         cs.shooter.getVal(2).setValue(Constants.SHOOTER_MODIFIER);
 
         if (t.get() > 1 && t.get() < 3.5) {
@@ -51,10 +51,10 @@ public class SingleShootCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        cs.magLock.getVal(2).set(DoubleSolenoid.Value.kForward);
+        //cs.magLock.getVal(2).set(DoubleSolenoid.Value.kForward);
         cs.shooter.getVal(2).setValue(0);
 
-        cs.magLock.setDefaultPermission();
+        //cs.magLock.setDefaultPermission();
         cs.shooter.setDefaultPermission();
         cs.liftSolenoid.setDefaultPermission();
     }

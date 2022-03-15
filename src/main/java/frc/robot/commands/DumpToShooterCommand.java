@@ -25,7 +25,7 @@ public class DumpToShooterCommand extends CommandBase {
     @Override
     public void initialize() {
         controlSubsystem.shooter.setPermission(2);
-        controlSubsystem.magLock.setPermission(2);
+        //controlSubsystem.magLock.setPermission(2);
         controlSubsystem.liftSolenoid.setPermission(2);
 
         timer.reset();
@@ -36,12 +36,12 @@ public class DumpToShooterCommand extends CommandBase {
     public void execute() {
         controlSubsystem.shooter.getVal(2).setValue(Constants.SHOOTER_MODIFIER);
         if (timer.get() > 2 && timer.get() < 3) {
-            controlSubsystem.magLock.getVal(2).set(DoubleSolenoid.Value.kReverse);
+            //controlSubsystem.magLock.getVal(2).set(DoubleSolenoid.Value.kReverse);
             controlSubsystem.liftSolenoid.getVal(2).set(DoubleSolenoid.Value.kReverse);
         } else if (timer.get() > 3 && timer.get() < 5) {
             controlSubsystem.liftSolenoid.getVal(2).set(DoubleSolenoid.Value.kForward);
         } else if (timer.get() > 5 && timer.get() < 7) {
-            controlSubsystem.magLock.getVal(2).set(DoubleSolenoid.Value.kForward);
+            //controlSubsystem.magLock.getVal(2).set(DoubleSolenoid.Value.kForward);
         } else if ((timer.get() > 7 && timer.get() < 8)) {
             controlSubsystem.liftSolenoid.getVal(2).set(DoubleSolenoid.Value.kReverse);
         }
@@ -51,10 +51,10 @@ public class DumpToShooterCommand extends CommandBase {
     public void end(boolean interrupted) {
         controlSubsystem.shooter.getVal(2).setValue(0);
         controlSubsystem.liftSolenoid.getVal(2).set(DoubleSolenoid.Value.kForward);
-        controlSubsystem.magLock.getVal(2).set(DoubleSolenoid.Value.kForward);
+        //controlSubsystem.magLock.getVal(2).set(DoubleSolenoid.Value.kForward);
 
         controlSubsystem.shooter.setPermission(1);
-        controlSubsystem.magLock.setPermission(1);
+        //controlSubsystem.magLock.setPermission(1);
         controlSubsystem.liftSolenoid.setPermission(1);
     }
 
@@ -68,8 +68,8 @@ public class DumpToShooterCommand extends CommandBase {
             return true;
         if (!controlSubsystem.liftSolenoid.hasPermission(2))
             return true;
-        if (!controlSubsystem.magLock.hasPermission(2))
-            return true;
+        //if (!controlSubsystem.magLock.hasPermission(2))
+        //    return true;
 
         return false;
     }

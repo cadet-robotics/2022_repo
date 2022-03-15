@@ -17,7 +17,7 @@ public class AutoShoot extends CommandBase {
     @Override
     public void initialize() {
         controlSubsystem.shooter.setPermission(2);
-        controlSubsystem.magLock.setPermission(2);
+        //controlSubsystem.magLock.setPermission(2);
         controlSubsystem.liftSolenoid.setPermission(2);
         t.start();
     }

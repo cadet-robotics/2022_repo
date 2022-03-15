@@ -21,10 +21,13 @@ import frc.robot.permissions.PermissiveHolder;
 import frc.robot.vision.PixyHandler;
 import io.github.pseudoresonance.pixy2api.Pixy2;
 
+import java.text.DecimalFormat;
+
 public class ControlSubsystem extends SubsystemBase {
     private Config conf = Config.getInstance();
 
     public int periodicCounter = 0;
+    private DecimalFormat df;
 
     private Motors motors;
     public Sensors sensors;
@@ -76,6 +79,8 @@ public class ControlSubsystem extends SubsystemBase {
     public ControlSubsystem(Motors motors, Sensors sensors) {
         this.motors = motors;
         this.sensors = sensors;
+
+        df = new DecimalFormat("0.000");
 
         // initialize mecanum drive
         CANSparkMax[] driveMotors = motors.getDrive();
@@ -206,14 +211,23 @@ public class ControlSubsystem extends SubsystemBase {
         // once per ~.25 seconds
         periodicCounter++;
         if (periodicCounter % (50/4) == 0) {
+            if (drive.hasPermission(1)) {
+                SmartDashboard.putNumber("Drive FL", motors.getDrive()[0].get());
+                SmartDashboard.putNumber("Drive FR", motors.getDrive()[1].get());
+                SmartDashboard.putNumber("Drive BL", motors.getDrive()[2].get());
+                SmartDashboard.putNumber("Drive BR", motors.getDrive()[3].get());
+            }
+
+            SmartDashboard.putString("Climb Current", df.format(motors.getClimb().getOutputCurrent()));
             SmartDashboard.putString("Alliance Color", ballSignature == 1 ? "Red" : "Blue");
             SmartDashboard.putNumber("Slider Percent", sliderToPercent());
 
-            SmartDashboard.putNumber("Intake Modifier", Constants.INTAKE_MODIFIER);
-            SmartDashboard.putNumber("Shooter Modifier", Constants.SHOOTER_MODIFIER);
-            SmartDashboard.putNumber("Drive Modifier", Constants.DRIVE_MODIFIER);
+            //df.format()
+            SmartDashboard.putString("Intake Modifier", df.format(Constants.INTAKE_MODIFIER));
+            SmartDashboard.putString("Shooter Modifier", df.format(Constants.SHOOTER_MODIFIER));
+            SmartDashboard.putString("Drive Modifier", df.format(Constants.DRIVE_MODIFIER));
 
-            SmartDashboard.putNumber("Compressor Pressure", airCompressor.getPressure());
+            SmartDashboard.putString("Compressor Pressure", df.format(airCompressor.getPressure()));
             SmartDashboard.putNumber("Intake RPM", motors.getIntake().getMotor1().get());
             SmartDashboard.putNumber("Shooter RPM", motors.getShooter()[0].get());
 
@@ -238,10 +252,16 @@ public class ControlSubsystem extends SubsystemBase {
             liftSolenoid.getVal(1).set(
                     ballLiftButton.get() ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward
             );
-        if (magLock.hasPermission(1))
-            magLock.getVal(1).set(
-                    magLockButton.get() ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward
-            );
+        if (magLock.hasPermission(1)) {
+            if (27 / sensors.liftHeight.getAverageVoltage() < 40 || !sensors.ballOnLift.get()) {
+                magLock.getVal(1).set(DoubleSolenoid.Value.kReverse);
+            } else {
+                magLock.getVal(1).set(DoubleSolenoid.Value.kForward);
+            }
+            //magLock.getVal(1).set(
+            //        magLockButton.get() ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward
+            //);
+        }
 
         // intake
         if ((driverJoystick.getRawButton(conf.getDriverControls().getInt("dj intake manual")) || coDriverIntake.get())
@@ -256,8 +276,41 @@ public class ControlSubsystem extends SubsystemBase {
         // shooter
         if (shooter.hasPermission(1)) {
             shooter.getVal(1).setValue(
-                    runShooterButton.get() ? Constants.SHOOTER_MODIFIER : 0
+                    // TODO: make this better with config and stuff
+                    runShooterButton.get() || codriverJoystick.getRawButton(5) ? Constants.SHOOTER_MODIFIER : 0
             );
+        }
+
+        // quick shooter speed set
+        //SmartDashboard.putNumber("POV", driverJoystick.getPOV());
+        if (driverJoystick.getPOV() != -1) {
+            switch (driverJoystick.getPOV()) {
+                case 0:
+                    Constants.SHOOTER_MODIFIER = 0.85;
+                    break;
+                case 90:
+                    Constants.SHOOTER_MODIFIER = 0.95;
+                    break;
+                case 180:
+                    Constants.DRIVE_MODIFIER = 0.3;
+                    break;
+                case 270:
+                    break;
+            }
+        }
+
+        // lift control
+        if (codriverJoystick.getPOV() != -1) {
+            switch (codriverJoystick.getPOV()) {
+                case 0:
+                    motors.getClimb().set(-1 * Constants.CLIMB_SPEED);
+                    break;
+                case 180:
+                    motors.getClimb().set(Constants.CLIMB_SPEED);
+                    break;
+            }
+        } else {
+            motors.getClimb().set(0);
         }
     }
 

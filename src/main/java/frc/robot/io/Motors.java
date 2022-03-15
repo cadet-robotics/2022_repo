@@ -8,6 +8,7 @@ public class Motors {
     private CANSparkMax frontLeft, frontRight, backLeft, backRight; // drive motors
     private CANSparkMax intake, intakeTop;
     private CANSparkMax shooter1, shooter2;
+    private CANSparkMax climb;
 
     private Config conf = Config.getInstance();
 
@@ -32,6 +33,9 @@ public class Motors {
         shooter1.enableVoltageCompensation(11);
         shooter2.enableVoltageCompensation(11);
 
+        climb = new CANSparkMax(conf.getCan().getInt("climb"), CANSparkMaxLowLevel.MotorType.kBrushless);
+        climb.enableVoltageCompensation(11);
+
         // can motor setup stuff :)
         frontLeft.setInverted(true);
         shooter1.setInverted(true);
@@ -47,4 +51,5 @@ public class Motors {
     }
     public MotorPair getIntake() { return new MotorPair(intake, intakeTop); }
     public CANSparkMax[] getShooter() {return new CANSparkMax[] { shooter1, shooter2 }; }
+    public CANSparkMax getClimb() { return climb; }
 }
